@@ -13,4 +13,3 @@ $twig = Twig::create(__DIR__);
 $app->add(TwigMiddleware::create($app, $twig));
 
 require __DIR__ . '/Actions.php';
-

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 require __DIR__ . "/Classes/KouIstatistikWrapper.php";
-require __DIR__ . "/Classes/KouExamLetterGradeCalculator.php";
+require __DIR__ . "/Classes/KouLetterGradeCalculator.php";
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -11,7 +11,7 @@ use Slim\Routing\RouteCollectorProxy;
 use Slim\Views\Twig;
 
 use SinanBekar\Kou\IstatistikWrapper;
-use SinanBekar\Kou\ExamLetterGradeCalculator;
+use SinanBekar\Kou\LetterGradeCalculator;
 
 $app->group('/api', function (RouteCollectorProxy $group) {
 
@@ -93,30 +93,37 @@ $app->group('/api', function (RouteCollectorProxy $group) {
                 if (!empty($dom)) {
                     $data['courseName'] = $wrapper::getCourseName($dom);
                     $data['gradeAverageOfClass'] = $wrapper::getGradeAverageOfClass($dom);
-                    $data['standartDeriationValue'] = $wrapper::getStandartDeriationValue($dom);
+                    $data['standardDeriationValue'] = $wrapper::getStandardDeriationValue($dom);
                     if (
                         isset($postData['midTermAverage'])
                         && isset($postData['midTermPercent'])
                         && isset($postData['finalGrade'])
                         && isset($postData['finalPercent'])
                     ) {
-                        $data['studentDsn'] = ExamLetterGradeCalculator::calculateDsn(
+
+                        if ($postData['midTermAverage'] > 100 || ((int)$postData['midTermPercent'] + (int)$postData['finalPercent']) !== 100) {
+                            throw new \UnexpectedValueException;
+                        }
+
+                        $data['studentDsn'] = LetterGradeCalculator::calculateDsn(
                             (float)$postData['midTermAverage'],
                             (int)$postData['finalGrade'],
                             (int)$postData['midTermPercent'],
                             (int)$postData['finalPercent']
                         );
-                        if ($data['studentDsn'] > 100 || ((int)$postData['midTermPercent'] + (int)$postData['finalPercent']) !== 100 ) {
+
+                        if ($data['studentDsn'] > 100) {
                             throw new \UnexpectedValueException;
                         }
+
                         $data['letterGrade'] =
-                            (new ExamLetterGradeCalculator(
+                            (new LetterGradeCalculator(
                                 $dom,
                                 $data['studentDsn'],
                                 (int)$postData['finalGrade']
                             ))->getLetterGrade();
                     }
-                    $data['tStandartInfo'] = $wrapper::getTStandartInfo($dom);
+                    $data['tStandardInfo'] = $wrapper::getTStandardInfo($dom);
                 }
             } catch (\Throwable $e) {
                 $data = [];

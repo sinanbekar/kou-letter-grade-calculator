@@ -37,7 +37,7 @@ class IstatistikWrapper
 
     public function __construct()
     {
-        $this->client = new Client();
+        $this->client = new Client(['verify' => false]);
     }
 
     /**
@@ -109,12 +109,12 @@ class IstatistikWrapper
 
     /**
      * Returns current academic term.
-     * TODO dynamic without requesting.
+     * //TODO: dynamic without requesting.
      * @return string
      */
     public function getCurrentAcademicTermKey(): string
     {
-        return "2021B";
+        return "2122G";
     }
 
     /**
@@ -274,11 +274,11 @@ class IstatistikWrapper
     }
 
     /**
-     * Returns standart deriation value.
+     * Returns standard deriation value.
      * @param \PHPHtmlParser\Dom $courseDom 
      * @return float
      */
-    public static function getStandartDeriationValue(DOM $courseDom): float
+    public static function getStandardDeriationValue(DOM $courseDom): float
     {
         try {
             return (float)trim($courseDom->find('table')[1]->find('tr')[8]->find('i b')->text);
@@ -288,34 +288,34 @@ class IstatistikWrapper
     }
 
     /**
-     * Returns T-Standart info as array.
+     * Returns T-Standard info as array.
      * @param \PHPHtmlParser\Dom $courseDom 
      * @return array
      */
-    public static function getTStandartInfo(DOM $courseDom): array
+    public static function getTStandardInfo(DOM $courseDom): array
     {
-        $tStandartDom = $courseDom->find('.col-lg-5 .col-lg-12 .bg-primary.col-lg-2')->getParent();
-        $tStandartInfo = [];
-        $tStandartInfo['classDsnSuccessLabel'] = trim($tStandartDom->find('.col-lg-1')->text);
-        $tStandartInfo['dsnRange'] = explode(' < />iv> ', $tStandartDom->find('.col-lg-2')[0]->innerHtml)[0]; // TODO : Fix ugly workaround
+        $tStandardDom = $courseDom->find('.col-lg-5 .col-lg-12 .bg-primary.col-lg-2')->getParent();
+        $tStandardInfo = [];
+        $tStandardInfo['classDsnSuccessLabel'] = trim($tStandardDom->find('.col-lg-1')->text);
+        $tStandardInfo['dsnRange'] = explode(' < />iv> ', $tStandardDom->find('.col-lg-2')[0]->innerHtml)[0]; // TODO : Fix ugly workaround
 
-        if ($tStandartInfo['classDsnSuccessLabel'] !== "Üstün Başarı") {
-            foreach ($tStandartDom->find('.col-lg-1.bg-primary') as $k => $gradeRange) {
+        if ($tStandardInfo['classDsnSuccessLabel'] !== "Üstün Başarı") {
+            foreach ($tStandardDom->find('.col-lg-1.bg-primary') as $k => $gradeRange) {
                 $letterSortingArray = ['FF', 'FD', 'DD', 'DC', 'CC', 'CB', 'BB', 'BA', 'AA'];
-                $tStandartInfo['tStandartRangeData'][] = ['letterGrade' => $letterSortingArray[$k], 'range' => trim($gradeRange->text)];
+                $tStandardInfo['tStandardRangeData'][] = ['letterGrade' => $letterSortingArray[$k], 'range' => trim($gradeRange->text)];
             }
         } else {
-            $tStandartInfo['tStandartRangeData'][] = ['letterGrade' => 'FF', 'range' => '0 - 29'];
-            $tStandartInfo['tStandartRangeData'][] = ['letterGrade' => 'FD', 'range' => '30 - 39'];
-            $tStandartInfo['tStandartRangeData'][] = ['letterGrade' => 'DD', 'range' => '40 - 49'];
-            $tStandartInfo['tStandartRangeData'][] = ['letterGrade' => 'DC', 'range' => '50 - 59'];
-            $tStandartInfo['tStandartRangeData'][] = ['letterGrade' => 'CC', 'range' => '60 - 69'];
-            $tStandartInfo['tStandartRangeData'][] = ['letterGrade' => 'CB', 'range' => '70 - 74'];
-            $tStandartInfo['tStandartRangeData'][] = ['letterGrade' => 'BB', 'range' => '75 - 79'];
-            $tStandartInfo['tStandartRangeData'][] = ['letterGrade' => 'BA', 'range' => '80 - 89'];
-            $tStandartInfo['tStandartRangeData'][] = ['letterGrade' => 'AA', 'range' => '90 - 100'];
+            $tStandardInfo['tStandardRangeData'][] = ['letterGrade' => 'FF', 'range' => '0 - 29'];
+            $tStandardInfo['tStandardRangeData'][] = ['letterGrade' => 'FD', 'range' => '30 - 39'];
+            $tStandardInfo['tStandardRangeData'][] = ['letterGrade' => 'DD', 'range' => '40 - 49'];
+            $tStandardInfo['tStandardRangeData'][] = ['letterGrade' => 'DC', 'range' => '50 - 59'];
+            $tStandardInfo['tStandardRangeData'][] = ['letterGrade' => 'CC', 'range' => '60 - 69'];
+            $tStandardInfo['tStandardRangeData'][] = ['letterGrade' => 'CB', 'range' => '70 - 74'];
+            $tStandardInfo['tStandardRangeData'][] = ['letterGrade' => 'BB', 'range' => '75 - 79'];
+            $tStandardInfo['tStandardRangeData'][] = ['letterGrade' => 'BA', 'range' => '80 - 89'];
+            $tStandardInfo['tStandardRangeData'][] = ['letterGrade' => 'AA', 'range' => '90 - 100'];
         }
-        return $tStandartInfo;
+        return $tStandardInfo;
     }
 
     /**
