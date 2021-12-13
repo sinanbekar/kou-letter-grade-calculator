@@ -1,10 +1,44 @@
-# KOU Letter Grade Calculator, KOUBS Istatistik Wrapper & RESTful API
+# KOU Letter Grade Calculator, KOUBS Istatistik Wrapper & Web API
 
-https://kou-letter-grade-calculator.herokuapp.com/
 
+##### In prod. https://kou-letter-grade-calculator.herokuapp.com/
+
+
+## Docker (Development)
+
+```no-highlight
+docker-compose up
 ```
-! Documentation has not completed yet.
+
+
+# Web API
+
+## Authorization
+
+Currently, all requests don't require authentication.
+
+## Responses
+```javascript
+{
+  "success" : bool,
+  "data"    : string | array
+}
 ```
+
+The `success` attribute describes if the transaction was successful or not.
+The `data` attribute contains any other metadata associated with the response. This will be an escaped string containing JSON data if successful or an empty array if fails.
+
+## Status Codes
+
+API returns the following status codes:
+
+| Status Code | Description |
+| :--- | :--- |
+| 200 | `OK` |
+| 400 | `BAD REQUEST` |
+| 404 | `NOT FOUND` |
+| 500 | `INTERNAL SERVER ERROR` |
+
 
 ## API Routes
 
